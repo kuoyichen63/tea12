@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Noto Serif TC", "Noto Serif", serif;
+  --font-sans: "Noto Sans TC", "Noto Sans", sans-serif;
+  
+  --color-natural-bg: #F8F5F1;
+  --color-natural-text: #4A453E;
+  
+  --color-clay: #D4A373;
+  --color-clay-hover: #C59464;
+  --color-clay-light: rgba(212, 163, 115, 0.1);
+  --color-clay-border: rgba(212, 163, 115, 0.2);
+  
+  --color-sage: #8DA080;
+  --color-sage-hover: #7A8D6E;
+  --color-sage-light: rgba(141, 160, 128, 0.1);
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-natural-bg);
+  color: var(--color-natural-text);
+  margin: 0;
+  padding: 0;
+}
+
+/* Elegant Soft Card Custom Design Class */
+.card-soft {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--color-clay-border);
+  border-radius: 24px;
+  box-shadow: 0 4px 20px -2px rgba(212, 163, 115, 0.08);
+}
+
+.btn-sage {
+  background-color: var(--color-sage);
+  color: #ffffff;
+  border-radius: 9999px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-sage:hover {
+  background-color: var(--color-sage-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(141, 160, 128, 0.25);
+}
+
+.serif {
+  font-family: var(--font-serif);
+}
+
+.input-field {
+  background: #ffffff;
+  border: 1px solid #E5E0D8;
+  border-radius: 12px;
+  padding: 10px 16px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.input-field:focus {
+  border-color: var(--color-clay);
+  box-shadow: 0 0 0 2px rgba(212, 163, 115, 0.15);
+}
