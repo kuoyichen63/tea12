@@ -1,0 +1,107 @@
+{
+  "entities": {
+    "AdminConfig": {
+      "title": "Admin Config",
+      "description": "Stores administrator configurations and verification credentials",
+      "type": "object",
+      "properties": {
+        "passwordHash": {
+          "type": "string",
+          "description": "SHA-256 hash of the admin password"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["passwordHash"]
+    },
+    "TeaItem": {
+      "title": "Tea Item",
+      "description": "Beverage menu details",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "priceM": {
+          "type": "number",
+          "description": "Price for medium size"
+        },
+        "priceL": {
+          "type": "number",
+          "description": "Price for large size"
+        },
+        "available": {
+          "type": "boolean"
+        },
+        "image": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["id", "name", "category", "priceL", "available"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Customer order containing beverages",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "customerName": {
+          "type": "string"
+        },
+        "customerPhone": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array"
+        },
+        "totalAmount": {
+          "type": "number"
+        },
+        "status": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["id", "customerName", "items", "totalAmount", "status", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/admin_configs/{configId}": {
+      "schema": "AdminConfig",
+      "description": "Configuration matching admin configs"
+    },
+    "/tea_items/{itemId}": {
+      "schema": "TeaItem",
+      "description": "Tea beverage item information"
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Orders placed by clients"
+    }
+  }
+}
