@@ -1,0 +1,8 @@
+{
+  "name": "茶飲點單系統",
+  "description": "具備前台手調茶飲客製點單、自動訂單編號生成、點單即時狀態追蹤，以及後台以密碼防護的實時訂單控台與茶飲菜單庫存管理系統。",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
