@@ -1,0 +1,80 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Reusable alphanumeric path variable hygiene pattern
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Validation blueprints
+    function isValidAdminConfig(data) {
+      return data.passwordHash is string && data.passwordHash.size() == 64
+             && (!('updatedAt' in data) || data.updatedAt == null || data.updatedAt is timestamp);
+    }
+
+    function isValidTeaItem(data) {
+      return data.id is string && data.id.size() <= 100
+             && data.name is string && data.name.size() > 0 && data.name.size() <= 100
+             && data.category is string && data.category.size() > 0 && data.category.size() <= 100
+             && (!('priceM' in data) || data.priceM == null || (data.priceM is number && data.priceM >= 0))
+             && data.priceL is number && data.priceL >= 0
+             && data.available is bool
+             && (!('description' in data) || data.description == null || (data.description is string && data.description.size() <= 1000))
+             && (!('createdAt' in data) || data.createdAt == null || data.createdAt is timestamp)
+             && (!('updatedAt' in data) || data.updatedAt == null || data.updatedAt is timestamp);
+    }
+
+    function isValidOrder(data) {
+      return data.id is string && data.id.size() <= 100
+             && data.customerName is string && data.customerName.size() > 0 && data.customerName.size() <= 100
+             && (!('customerPhone' in data) || data.customerPhone == null || (data.customerPhone is string && data.customerPhone.size() <= 50))
+             && data.items is list && data.items.size() > 0 && data.items.size() <= 50
+             && (data.items[0] is map)
+             && data.totalAmount is number && data.totalAmount >= 0
+             && data.status is string && (data.status == 'pending' || data.status == 'processing' || data.status == 'completed' || data.status == 'cancelled')
+             && (!('createdAt' in data) || data.createdAt == null || data.createdAt is timestamp)
+             && (!('updatedAt' in data) || data.updatedAt == null || data.updatedAt is timestamp);
+    }
+
+    // 1. Admin Configurations (Verification)
+    match /admin_configs/{configId} {
+      allow get: if isValidId(configId);
+      allow create: if isValidId(configId) && configId == 'config' && isValidAdminConfig(incoming());
+      allow update: if isValidId(configId) && configId == 'config' && isValidAdminConfig(incoming());
+    }
+
+    // 2. Tea Items Catalog
+    match /tea_items/{itemId} {
+      allow get: if isValidId(itemId);
+      allow list: if true; // List queries are public and are not bound to itemId
+      allow create: if isValidId(itemId) && isValidTeaItem(incoming());
+      allow update: if isValidId(itemId) && isValidTeaItem(incoming());
+      allow delete: if isValidId(itemId);
+    }
+
+    // 3. Orders Collection
+    match /orders/{orderId} {
+      allow get: if isValidId(orderId);
+      allow list: if true; // List queries are guest/admin-driven and not bound to orderId
+      allow create: if isValidId(orderId) && isValidOrder(incoming()) && incoming().status == 'pending';
+      allow update: if isValidId(orderId) 
+                    && isValidOrder(incoming())
+                    && !(existing().status == 'completed' || existing().status == 'cancelled');
+      allow delete: if isValidId(orderId);
+    }
+  }
+}
